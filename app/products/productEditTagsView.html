@@ -1,4 +1,4 @@
-<form class="form-horizontal" name="productForm">
+<form class="form-horizontal" name="productTagsForm">
     <fieldset>
         <legend>Product Search Tags</legend>
         <div class="form-group">
@@ -33,7 +33,7 @@
                     <button class="btn btn-primary"
                             style="width:80px;margin-right:10px"
                             type="submit"
-                            ng-click="vm.submit()">
+                            ng-click="vm.submit(productTagsForm.$valid)">
                         Save
                     </button>
                 </span>

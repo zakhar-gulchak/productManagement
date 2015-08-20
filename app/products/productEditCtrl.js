@@ -7,15 +7,31 @@
     angular
         .module("productManagement")
         .controller("ProductEditCtrl",
-        ["product",
-            "$state",
-            ProductEditCtrl]);
+                    ["product",
+                     "$state",
+                     "productService",
+                     ProductEditCtrl]);
 
 
-    function ProductEditCtrl(product, $state) {
+    function ProductEditCtrl(product, $state, productService) {
         var vm = this;
 
         vm.product = product;
+        vm.priceOption = 'percent';
+
+        vm.marginPercent = function () {
+            return productService.calculateMarginPercent(vm.product.price,
+                                                         vm.product.cost);
+        };
+
+        /* Calculate the price based on a markup */
+        vm.CalculatePrice = function () {
+            if (vm.priceOption == 'percent') {
+                vm.product.price = productService.calculatePriceFromPercent(vm.product.cost, vm.markupPercent);
+            } else {
+                vm.product.price = productService.calculatePriceFromAmount(vm.product.cost, vm.markupAmount);
+            }
+        };
 
         if (vm.product && vm.product.productId) {
             vm.title = "Edit: " + vm.product.productName;
@@ -31,10 +47,14 @@
             vm.opened = !vm.opened;
         };
 
-        vm.submit = function () {
-            vm.product.$save(function (data) {
-                toastr.success("Save Successful");
-            });
+        vm.submit = function (isValid) {
+            if (isValid) {
+                vm.product.$save(function (data) {
+                    toastr.success("Save Successful");
+                });
+            } else {
+                toastr.error("Invalid form values.");
+            }
         };
 
         vm.cancel = function () {
